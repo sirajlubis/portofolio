@@ -1,0 +1,1448 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Siraj Lubis — Interactive Portfolio</title>
+
+  <!-- Google Fonts: Syne, Italiana, & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Italiana&family=Inter:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,600&family=Syne:wght@800;900&display=swap" rel="stylesheet">
+
+  <!-- GSAP & ScrollTrigger Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+  <style>
+    :root {
+      --bg-light: #ffffff;
+      --bg-dark: #0d0d0f;
+      --neon-lime: #d2ff00;
+      --text-white: #ffffff;
+      --text-black: #0c0c0e;
+      --text-muted: #888888;
+      --card-bg-dark: #141418;
+      --border-dark: #282832;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-white);
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+      transition: background-color 0.4s ease;
+    }
+
+    body.theme-light {
+      background-color: var(--bg-light);
+      color: var(--text-black);
+    }
+
+    /* CURSOR FOLLOWER */
+    .cursor-dot {
+      position: fixed;
+      width: 18px;
+      height: 18px;
+      background: var(--neon-lime);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      mix-blend-mode: difference;
+      transition: transform 0.15s ease-out;
+    }
+
+    /* GLOBAL ANIMATED BACKGROUND CANVAS */
+    #bgCanvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* PAGE TRANSITION OVERLAY */
+    .page-transition {
+      position: fixed;
+      top: 100%; left: 0;
+      width: 100vw; height: 100vh;
+      background-color: var(--neon-lime);
+      z-index: 9999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      pointer-events: none;
+    }
+
+    .page-transition .transition-logo {
+      font-family: 'Syne', sans-serif;
+      font-size: 5rem;
+      font-weight: 900;
+      color: #000;
+      letter-spacing: -2px;
+    }
+
+    /* NAVBAR */
+    header {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      padding: 25px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+      mix-blend-mode: difference;
+    }
+
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 900;
+      letter-spacing: -1px;
+      color: #fff;
+    }
+
+    .hamburger-btn {
+      width: 46px;
+      height: 46px;
+      background: var(--neon-lime);
+      border: none;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .hamburger-btn:hover { transform: scale(1.08); }
+
+    .hamburger-btn span {
+      width: 22px;
+      height: 2.5px;
+      background: #000;
+    }
+
+    /* MENU OVERLAY */
+    .menu-overlay {
+      position: fixed;
+      top: -100%; left: 0;
+      width: 100vw; height: 100vh;
+      background-color: #121315;
+      color: #fff;
+      z-index: 500;
+      display: flex;
+      flex-direction: column;
+      padding: 30px 50px;
+      transition: top 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+      overflow-y: auto;
+    }
+
+    .menu-overlay.active { top: 0; }
+
+    .close-btn {
+      background: var(--neon-lime);
+      color: #000;
+      border: none;
+      font-size: 1.2rem;
+      font-weight: 900;
+      width: 42px; height: 42px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .menu-content {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 30px;
+    }
+
+    .menu-links a {
+      display: block;
+      font-family: 'Syne', sans-serif;
+      font-size: 5rem;
+      font-weight: 900;
+      color: #fff;
+      text-decoration: none;
+      line-height: 1.1;
+      text-align: center;
+      transition: color 0.2s ease, transform 0.2s ease;
+    }
+
+    .menu-links a:hover {
+      color: var(--neon-lime);
+      transform: scale(1.05);
+    }
+
+    /* VIEWS / STANDALONE PAGE SYSTEM */
+    .view-page {
+      display: none;
+      min-height: 100vh;
+      position: relative;
+      z-index: 1;
+      background: transparent;
+    }
+
+    .view-page.active {
+      display: block;
+    }
+
+    /* ANIMATED FOOTER BASE */
+    .animated-footer {
+      padding: 60px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+
+    .animated-footer.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* FOOTER DARK (HOME & WORKS) */
+    .animated-footer.footer-dark {
+      background: #08080a;
+      border-top: 1px solid var(--border-dark);
+    }
+
+    .animated-footer.footer-dark p { color: var(--text-muted); font-size: 0.9rem; }
+
+    .animated-footer.footer-dark .footer-nav a {
+      color: var(--neon-lime);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      transition: opacity 0.2s ease;
+    }
+
+    .animated-footer.footer-dark .footer-nav a:hover { opacity: 0.8; }
+
+    /* FOOTER LIGHT (ABOUT & CONTACT) */
+    .animated-footer.footer-light {
+      background: #ffffff;
+      border-top: 2px solid #000000;
+    }
+
+    .animated-footer.footer-light p {
+      color: #000000;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .animated-footer.footer-light .footer-nav a {
+      color: #000000;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      transition: color 0.2s ease;
+    }
+
+    .animated-footer.footer-light .footer-nav a:hover {
+      color: #555555;
+    }
+
+    .footer-nav { display: flex; gap: 25px; }
+
+    /* ==================== 1. HOME LANDING PAGE ==================== */
+    .hero-top-section {
+      position: relative;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .hero-marquee-bg {
+      position: absolute;
+      width: 100%;
+      overflow: hidden;
+      white-space: nowrap;
+      z-index: 1;
+      opacity: 0.85;
+    }
+
+    .hero-marquee-bg span {
+      font-family: 'Syne', sans-serif;
+      font-size: 8rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: var(--text-white);
+    }
+
+    .hero-stage {
+      position: relative;
+      z-index: 3;
+      width: 320px; height: 400px;
+      display: flex; justify-content: center; align-items: center;
+    }
+
+    .hero-photo-box {
+      position: relative;
+      z-index: 2;
+      width: 100%; height: 100%;
+      background: #1a1a1e;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+      border: 1px solid rgba(255,255,255,0.1);
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .hero-photo-box:hover {
+      border-color: var(--neon-lime);
+      box-shadow: 0 0 25px rgba(210, 255, 0, 0.3);
+    }
+
+    .hero-photo-box img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      filter: grayscale(100%);
+      transition: filter 0.4s ease;
+    }
+
+    .hero-photo-box:hover img { filter: grayscale(0%); }
+
+    .hero-scroll-content {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 80px 30px 100px;
+      position: relative;
+      z-index: 4;
+    }
+
+    .text-reveal-box { text-align: center; margin-bottom: 100px; }
+
+    .wrapped-text {
+      font-family: 'Syne', sans-serif;
+      font-size: 3.5rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      line-height: 1.1;
+      color: var(--neon-lime);
+    }
+
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 30px;
+      margin-bottom: 80px;
+    }
+
+    .content-card {
+      background: var(--card-bg-dark);
+      border: 1px solid var(--border-dark);
+      border-radius: 16px;
+      padding: 35px;
+      transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .content-card:hover {
+      transform: translateY(-8px);
+      border-color: var(--neon-lime);
+      box-shadow: 0 10px 30px rgba(210, 255, 0, 0.2);
+    }
+
+    .content-card h3 { font-family: 'Syne', sans-serif; font-size: 1.8rem; margin-bottom: 12px; }
+    .content-card p { color: var(--text-muted); line-height: 1.6; }
+
+    /* STATS METRIC CARDS HERO PAGE */
+    .hero-stats-section {
+      margin-bottom: 80px;
+    }
+
+    .stats-card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+    }
+
+    .stat-card {
+      background: var(--card-bg-dark);
+      border: 1px solid var(--border-dark);
+      border-radius: 16px;
+      padding: 40px 30px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 220px;
+      transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-8px);
+      border-color: var(--neon-lime);
+      box-shadow: 0 10px 30px rgba(210, 255, 0, 0.2);
+    }
+
+    .stat-number-box {
+      display: flex;
+      align-items: baseline;
+      font-family: 'Syne', sans-serif;
+      font-size: 3.5rem;
+      font-weight: 900;
+      color: var(--neon-lime);
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+
+    .stat-label {
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-white);
+      letter-spacing: 0.5px;
+      margin-bottom: 25px;
+    }
+
+    .stat-progress-bar {
+      width: 100%;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .stat-progress-fill {
+      height: 100%;
+      background: var(--neon-lime);
+      width: 0%;
+      transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* ==================== 2. WORKS LANDING PAGE ==================== */
+    .section-works {
+      padding: 120px 40px 80px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .works-big-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 8rem;
+      font-weight: 900;
+      line-height: 0.85;
+      text-transform: uppercase;
+      letter-spacing: -3px;
+      margin-bottom: 20px;
+    }
+
+    .works-subtitle-bar {
+      display: flex;
+      gap: 40px;
+      font-size: 0.9rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 60px;
+    }
+
+    /* PIE / DONUT CHART BREAKDOWN PAGE WORKS */
+    .works-analytics-card {
+      background: var(--card-bg-dark);
+      border: 1px solid var(--border-dark);
+      border-radius: 20px;
+      padding: 45px;
+      margin-bottom: 60px;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .works-analytics-card:hover {
+      border-color: var(--neon-lime);
+      box-shadow: 0 0 30px rgba(210, 255, 0, 0.15);
+    }
+
+    .analytics-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 2rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      margin-bottom: 35px;
+      color: var(--text-white);
+    }
+
+    .pie-chart-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      gap: 40px;
+    }
+
+    .pie-chart-visual {
+      position: relative;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: conic-gradient(
+        var(--neon-lime) 0deg 0deg,
+        #ffffff 0deg 0deg,
+        #33333e 0deg 0deg
+      );
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: transform 0.3s ease;
+    }
+
+    .pie-chart-visual:hover {
+      transform: scale(1.04);
+    }
+
+    .pie-chart-inner {
+      width: 140px;
+      height: 140px;
+      background: var(--card-bg-dark);
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+    }
+
+    .pie-inner-text {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: var(--neon-lime);
+    }
+
+    .pie-inner-sub {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .pie-legend-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      flex: 1;
+      min-width: 280px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 18px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-dark);
+      border-radius: 12px;
+      transition: border-color 0.2s ease, background-color 0.2s ease;
+    }
+
+    .legend-item:hover {
+      border-color: var(--neon-lime);
+      background: rgba(210, 255, 0, 0.05);
+    }
+
+    .legend-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .legend-color-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 4px;
+    }
+
+    .legend-label {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-white);
+      text-transform: uppercase;
+    }
+
+    .legend-value {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 900;
+      color: var(--neon-lime);
+    }
+
+    .project-hero-showcase {
+      width: 100%;
+      height: 520px;
+      background: var(--card-bg-dark);
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid var(--border-dark);
+      position: relative;
+      margin-bottom: 60px;
+      animation: floatSubtle 4s ease-in-out infinite alternate;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .project-hero-showcase:hover {
+      border-color: var(--neon-lime);
+      box-shadow: 0 0 30px rgba(210, 255, 0, 0.25);
+    }
+
+    .project-hero-showcase img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      filter: grayscale(100%);
+      transition: filter 0.5s ease, transform 0.5s ease;
+    }
+
+    .project-hero-showcase:hover img {
+      filter: grayscale(0%);
+      transform: scale(1.03);
+    }
+
+    .works-matrix-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 35px;
+      margin-bottom: 80px;
+    }
+
+    .matrix-card {
+      background: var(--card-bg-dark);
+      border: 1px solid var(--border-dark);
+      border-radius: 16px;
+      overflow: hidden;
+      padding: 25px;
+      transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+      cursor: pointer;
+    }
+
+    .matrix-card:hover {
+      transform: translateY(-10px) scale(1.02);
+      border-color: var(--neon-lime);
+      box-shadow: 0 20px 35px rgba(210, 255, 0, 0.2);
+    }
+
+    .matrix-thumb {
+      width: 100%; height: 230px;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .matrix-thumb img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      filter: grayscale(100%);
+      transition: filter 0.4s ease, transform 0.4s ease;
+    }
+
+    .matrix-card:hover .matrix-thumb img {
+      filter: grayscale(0%);
+      transform: scale(1.05);
+    }
+
+    @keyframes floatSubtle {
+      0% { transform: translateY(0px); }
+      100% { transform: translateY(-10px); }
+    }
+
+    /* ==================== 3. ABOUT LANDING PAGE ==================== */
+    .section-about {
+      color: var(--text-black);
+      padding: 120px 40px 80px;
+      position: relative;
+    }
+
+    .about-big-title {
+      font-family: 'Italiana', serif;
+      font-size: 9rem;
+      line-height: 0.85;
+      text-transform: uppercase;
+      margin-bottom: 40px;
+    }
+
+    .floating-collage-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 25px;
+      margin-bottom: 80px;
+    }
+
+    .collage-item {
+      height: 320px;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 2px solid transparent;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.08);
+      transition: transform 0.4s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+      background: #e8e8ed;
+    }
+
+    .collage-item:hover {
+      border-color: #000000;
+      box-shadow: 6px 6px 0px #000000;
+    }
+
+    .collage-item img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      filter: grayscale(100%);
+      transition: filter 0.4s ease, transform 0.4s ease;
+    }
+
+    .collage-item:hover img {
+      filter: grayscale(0%);
+      transform: scale(1.05);
+    }
+
+    .collage-item.float-1 { animation: floatSlow 4s ease-in-out infinite alternate; }
+    .collage-item.float-2 { animation: floatSlow 3.5s ease-in-out infinite alternate-reverse; }
+    .collage-item.float-3 { animation: floatSlow 4.5s ease-in-out infinite alternate; }
+
+    @keyframes floatSlow {
+      0% { transform: translateY(0px); }
+      100% { transform: translateY(-12px); }
+    }
+
+    .about-details-container {
+      max-width: 1100px;
+      margin: 0 auto 80px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+    }
+
+    .info-box-panel {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border: 2px solid #000;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 8px 8px 0px #000;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .info-box-panel:hover {
+      transform: translateY(-6px);
+      box-shadow: 12px 12px 0px #000;
+    }
+
+    .info-box-panel h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 2rem;
+      margin-bottom: 25px;
+      text-transform: uppercase;
+    }
+
+    .timeline-item {
+      border-left: 3px solid #000;
+      padding-left: 20px;
+      margin-bottom: 25px;
+      position: relative;
+    }
+
+    .timeline-item h4 { font-size: 1.2rem; font-weight: 800; }
+    .timeline-item p { color: #555; font-size: 0.95rem; margin-top: 5px; }
+
+    .social-media-section {
+      max-width: 1100px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .social-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin-top: 30px;
+    }
+
+    .social-card {
+      background: #000;
+      color: #fff;
+      padding: 25px;
+      border-radius: 14px;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      border: 2px solid #000;
+      transition: transform 0.3s ease, background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .social-card:hover {
+      background: var(--neon-lime);
+      color: #000;
+      transform: translateY(-6px);
+      box-shadow: 6px 6px 0px #000;
+    }
+
+    /* ==================== 4. CONTACT LANDING PAGE ==================== */
+    .section-contact {
+      color: var(--text-black);
+      padding: 120px 20px 80px;
+      max-width: 850px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .contact-header {
+      margin-bottom: 50px;
+    }
+
+    .contact-big-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 6rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      line-height: 0.9;
+      margin-bottom: 20px;
+    }
+
+    .contact-form-card {
+      background: transparent;
+      padding: 10px 0 30px;
+    }
+
+    .form-row-two {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin-bottom: 35px;
+    }
+
+    .form-field {
+      margin-bottom: 35px;
+    }
+
+    .form-field label {
+      display: block;
+      font-family: 'Inter', Georgia, serif;
+      font-style: italic;
+      font-size: 1.1rem;
+      color: #2b2b36;
+      margin-bottom: 10px;
+      font-weight: 500;
+    }
+
+    .form-field input, .form-field textarea {
+      width: 100%;
+      padding: 16px 20px;
+      background: #ffffff;
+      border: 2px solid #2b2b36;
+      border-radius: 0px;
+      color: #000000;
+      font-size: 1rem;
+      font-family: 'Inter', sans-serif;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .form-field input:focus, .form-field textarea:focus {
+      outline: none;
+      border-color: #000000;
+      box-shadow: 4px 4px 0px #000000;
+    }
+
+    .form-field textarea {
+      resize: vertical;
+      min-height: 180px;
+    }
+
+    .submit-btn-square {
+      background: #2d323e;
+      color: #ffffff;
+      padding: 16px 36px;
+      border: none;
+      border-radius: 0px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .submit-btn-square:hover {
+      background: #000000;
+      transform: translateY(-2px);
+      box-shadow: 4px 4px 0px var(--neon-lime);
+    }
+
+    @media (max-width: 900px) {
+      .works-big-title, .about-big-title { font-size: 4.5rem; }
+      .contact-big-title { font-size: 3.5rem; }
+      .form-row-two { grid-template-columns: 1fr; gap: 0; }
+      .about-details-container { grid-template-columns: 1fr; }
+      .floating-collage-grid, .social-grid { grid-template-columns: 1fr 1fr; }
+      .menu-links a { font-size: 3rem; }
+      .pie-chart-container { flex-direction: column; }
+    }
+  </style>
+</head>
+<body class="theme-dark">
+
+  <!-- BACKGROUND MOTION CANVAS -->
+  <canvas id="bgCanvas"></canvas>
+
+  <!-- CURSOR FOLLOWER -->
+  <div class="cursor-dot" id="cursorDot"></div>
+
+  <!-- TRANSITION SWEEP OVERLAY -->
+  <div class="page-transition" id="transitionLayer">
+    <div class="transition-logo">SIRAJLUBIS</div>
+  </div>
+
+  <!-- NAVBAR -->
+  <header>
+    <div class="logo">SIRAJLUBIS</div>
+    <button class="hamburger-btn" onclick="toggleMenu()" aria-label="Menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </header>
+
+  <!-- MENU OVERLAY -->
+  <div class="menu-overlay" id="menuOverlay">
+    <div class="menu-header" style="display:flex; justify-content:space-between; width:100%;">
+      <div class="logo">SIRAJLUBIS</div>
+      <button class="close-btn" onclick="toggleMenu()">✕</button>
+    </div>
+    
+    <div class="menu-content">
+      <div class="menu-links">
+        <a href="#home" onclick="navigateTo('home')">HOME</a>
+        <a href="#works" onclick="navigateTo('works')">WORKS</a>
+        <a href="#about" onclick="navigateTo('about')">ABOUT</a>
+        <a href="#contact" onclick="navigateTo('contact')">CONTACT</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 1. HOME PAGE ==================== -->
+  <div class="view-page active" id="page-home">
+    <section class="hero-top-section">
+      <div class="hero-marquee-bg">
+        <div id="heroMarqueeText">
+          <span>EXCELSIOR! • SIRAJ LUBIS • CREATIVE DESIGNER • </span>
+        </div>
+      </div>
+
+      <div class="hero-stage">
+        <div class="hero-photo-box">
+          <img src="https://lh3.googleusercontent.com/d/17F5nGstxnqjTcrs2N2q4hQO51xhSsQXK" 
+               onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=600'" 
+               alt="Siraj Lubis">
+        </div>
+      </div>
+    </section>
+
+    <div class="hero-scroll-content">
+      <div class="text-reveal-box">
+        <p class="wrapped-text reveal-item">REDEFINING LIMITS & CRAFTING DIGITAL EXPERIENCES</p>
+      </div>
+
+      <!-- SEKSI STATISTIK METRIK HERO PAGE -->
+      <div class="hero-stats-section" id="heroStatsSection">
+        <div class="stats-card-grid">
+          
+          <div class="stat-card">
+            <div>
+              <div class="stat-number-box">
+                <span class="count-value" data-target="40">0</span><span>+</span>
+              </div>
+              <div class="stat-label">Total Projects Completed</div>
+            </div>
+            <div class="stat-progress-bar">
+              <div class="stat-progress-fill" data-progress="100%"></div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div>
+              <div class="stat-number-box">
+                <span class="count-value" data-target="3">0</span><span style="font-size: 2.2rem; margin-left: 5px;">YRS</span>
+              </div>
+              <div class="stat-label">Work Experience</div>
+            </div>
+            <div class="stat-progress-bar">
+              <div class="stat-progress-fill" data-progress="100%"></div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div>
+              <div class="stat-number-box">
+                <span class="count-value" data-target="15">0</span><span>+</span>
+              </div>
+              <div class="stat-label">Happy Clients</div>
+            </div>
+            <div class="stat-progress-bar">
+              <div class="stat-progress-fill" data-progress="100%"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="grid-container">
+        <div class="content-card reveal-item">
+          <h3>01 / Graphic Designer</h3>
+          <p>Membuat drafting, brief design, dan eksekusi kebutuhan desain untuk client.</p>
+        </div>
+        <div class="content-card reveal-item">
+          <h3>02 / Efficient Programmer</h3>
+          <p>Mengembangkan banyak proyek web app untuk kebutuhan tertentu dengan efisiensi yang baik.</p>
+        </div>
+        <div class="content-card reveal-item">
+          <h3>03 / Social Media & Copywriting</h3>
+          <p>Menganalisa trend, membuat content planning, dan scheduling upload untuk social media.</p>
+        </div>
+      </div>
+    </div>
+
+    <footer class="animated-footer footer-dark" id="footer-home">
+      <p>© 2026 SIRAJ LUBIS. ALL RIGHTS RESERVED.</p>
+      <div class="footer-nav">
+        <a href="#works" onclick="navigateTo('works')">WORKS</a>
+        <a href="#about" onclick="navigateTo('about')">ABOUT</a>
+        <a href="#contact" onclick="navigateTo('contact')">CONTACT</a>
+      </div>
+    </footer>
+  </div>
+
+  <!-- ==================== 2. WORKS PAGE ==================== -->
+  <div class="view-page" id="page-works">
+    <div class="section-works">
+      <h1 class="works-big-title">WORKS</h1>
+      <div class="works-subtitle-bar">
+        <span>PROJECT SHOWCASE</span>
+        <span>2026 EDITION</span>
+        <span>INDONESIA 🇮🇩</span>
+      </div>
+
+      <!-- SEKSI PIE CHART BREAKDOWN PAGE WORKS -->
+      <div class="works-analytics-card" id="worksAnalyticsSection">
+        <h2 class="analytics-title">PROJECT CATEGORY BREAKDOWN</h2>
+        
+        <div class="pie-chart-container">
+          <div class="pie-chart-visual" id="pieChartVisual">
+            <div class="pie-chart-inner">
+              <span class="pie-inner-text" id="pieInnerText">0%</span>
+              <span class="pie-inner-sub">SKILL</span>
+            </div>
+          </div>
+
+          <div class="pie-legend-list">
+            
+            <div class="legend-item">
+              <div class="legend-left">
+                <div class="legend-color-dot" style="background: var(--neon-lime);"></div>
+                <span class="legend-label">Social Media Analyst & Copywriting</span>
+              </div>
+              <span class="legend-value legend-count" data-target="40">0%</span>
+            </div>
+
+            <div class="legend-item">
+              <div class="legend-left">
+                <div class="legend-color-dot" style="background: #ffffff;"></div>
+                <span class="legend-label">Programming (Recently Web App)</span>
+              </div>
+              <span class="legend-value legend-count" data-target="30">0%</span>
+            </div>
+
+            <div class="legend-item">
+              <div class="legend-left">
+                <div class="legend-color-dot" style="background: #33333e;"></div>
+                <span class="legend-label">Graphic Design</span>
+              </div>
+              <span class="legend-value legend-count" data-target="30">0%</span>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="project-hero-showcase reveal-item">
+        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1200" alt="Works Featured">
+      </div>
+
+      <div class="works-matrix-grid">
+        <div class="matrix-card reveal-item">
+          <div class="matrix-thumb">
+            <img src="https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?q=80&w=600" alt="Project 1">
+          </div>
+          <span style="color: var(--neon-lime); font-weight: 800; font-size: 0.8rem;">01 / WEB APP</span>
+          <h3 style="font-family:'Syne'; font-size: 1.5rem; margin-top:5px;">Financial Dashboard</h3>
+          <p style="color: var(--text-muted); margin-top: 10px; font-size: 0.95rem;">Sistem keuangan interaktif berkinerja tinggi dengan visualisasi data otomatis.</p>
+        </div>
+
+        <div class="matrix-card reveal-item">
+          <div class="matrix-thumb">
+            <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=600" alt="Project 2">
+          </div>
+          <span style="color: var(--neon-lime); font-weight: 800; font-size: 0.8rem;">02 / AUTOMATION</span>
+          <h3 style="font-family:'Syne'; font-size: 1.5rem; margin-top:5px;">Tournament Engine</h3>
+          <p style="color: var(--text-muted); margin-top: 10px; font-size: 0.95rem;">Otomatisasi bagan pertandingan berbasis Google Apps Script dengan statistik real-time.</p>
+        </div>
+
+        <div class="matrix-card reveal-item">
+          <div class="matrix-thumb">
+            <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=600" alt="Project 3">
+          </div>
+          <span style="color: var(--neon-lime); font-weight: 800; font-size: 0.8rem;">03 / INTERACTIVE</span>
+          <h3 style="font-family:'Syne'; font-size: 1.5rem; margin-top:5px;">Interactive Slide Decks</h3>
+          <p style="color: var(--text-muted); margin-top: 10px; font-size: 0.95rem;">Modul presentasi digital kustom dengan navigasi interaktif modern.</p>
+        </div>
+      </div>
+    </div>
+
+    <footer class="animated-footer footer-dark" id="footer-works">
+      <p>© 2026 SIRAJ LUBIS. ALL RIGHTS RESERVED.</p>
+      <div class="footer-nav">
+        <a href="#home" onclick="navigateTo('home')">HOME</a>
+        <a href="#about" onclick="navigateTo('about')">ABOUT</a>
+        <a href="#contact" onclick="navigateTo('contact')">CONTACT</a>
+      </div>
+    </footer>
+  </div>
+
+  <!-- ==================== 3. ABOUT PAGE ==================== -->
+  <div class="view-page" id="page-about">
+    <div class="section-about">
+      <h1 class="about-big-title">ABOUT</h1>
+
+      <div class="floating-collage-grid">
+        <div class="collage-item float-1">
+          <img src="https://lh3.googleusercontent.com/d/1-J0GBTGrGd0t57I8p4uqrGXUF8RiRwkY" alt="Foto 1">
+        </div>
+        <div class="collage-item float-2">
+          <img src="https://lh3.googleusercontent.com/d/1eBF-XQgLdqnvQJC8Xew0K0H6BDsJqw9f" alt="Foto 2">
+        </div>
+        <div class="collage-item float-3">
+          <img src="https://lh3.googleusercontent.com/d/1TQToe7nfBsq9U1I-eagCnq3S2fqna3DR" alt="Foto 3">
+        </div>
+      </div>
+
+      <div class="about-details-container">
+        <div class="info-box-panel">
+          <h3>PENDIDIKAN</h3>
+          <div class="timeline-item">
+            <h4>Pendidikan Akademik</h4>
+            <p>2017 - 2024 Pesantren Murottal Depok</p>
+            <p>2023 - 2024 Sekolah Vokasi PeTIK Depok</p>
+            <p>2025 - Present STMIK Antar Bangsa | Sistem Informasi</p>
+          </div>
+        </div>
+
+        <div class="info-box-panel">
+          <h3>ACHIEVEMENTS</h3>
+          <div class="timeline-item">
+            <h4>Pencapaian & Sertifikasi</h4>
+            <p>BNSP Junior Android Programming</p>
+            <p>BNSP Content Creator</p>
+            <p>Best New Student of The Year at STMIK Antar Bangsa</p>
+            <p>3rd Place of Top Graduate at PeTIK Depok</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="social-media-section">
+        <h3 style="font-family:'Syne'; font-size:2rem; text-transform:uppercase; margin-bottom:20px;">CONNECT ON SOCIALS</h3>
+        <div class="social-grid">
+          <a href="https://www.instagram.com/sirajlubis" target="_blank" class="social-card">INSTAGRAM</a>
+          <a href="https://www.tiktok.com/@sirlubis" target="_blank" class="social-card">TIKTOK</a>
+          <a href="https://id.linkedin.com/in/sirajlubis" target="_blank" class="social-card">LINKEDIN</a>
+          <a href="https://dribbble.com/sirajlubis" target="_blank" class="social-card">DRIBBBLE</a>
+        </div>
+      </div>
+    </div>
+
+    <footer class="animated-footer footer-light" id="footer-about">
+      <p>© 2026 SIRAJ LUBIS. ALL RIGHTS RESERVED.</p>
+      <div class="footer-nav">
+        <a href="#home" onclick="navigateTo('home')">HOME</a>
+        <a href="#works" onclick="navigateTo('works')">WORKS</a>
+        <a href="#contact" onclick="navigateTo('contact')">CONTACT</a>
+      </div>
+    </footer>
+  </div>
+
+  <!-- ==================== 4. CONTACT PAGE ==================== -->
+  <div class="view-page" id="page-contact">
+    <div class="section-contact">
+      
+      <div class="contact-header">
+        <h1 class="contact-big-title">GET IN TOUCH</h1>
+      </div>
+
+      <div class="contact-form-card">
+        <form action="mailto:sirajazmilubis.com" method="post" enctype="text/plain">
+          
+          <div class="form-row-two">
+            <div class="form-field">
+              <label for="firstName">First Name *</label>
+              <input type="text" id="firstName" name="firstName" required>
+            </div>
+            <div class="form-field">
+              <label for="lastName">Last Name *</label>
+              <input type="text" id="lastName" name="lastName" required>
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label for="email">Email *</label>
+            <input type="email" id="email" name="email" required>
+          </div>
+
+          <div class="form-field">
+            <label for="subject">Subject</label>
+            <input type="text" id="subject" name="subject">
+          </div>
+
+          <div class="form-field">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" required></textarea>
+          </div>
+
+          <button type="submit" class="submit-btn-square">SUBMIT</button>
+        </form>
+      </div>
+    </div>
+
+    <footer class="animated-footer footer-light" id="footer-contact">
+      <p>© 2026 SIRAJ LUBIS. ALL RIGHTS RESERVED.</p>
+      <div class="footer-nav">
+        <a href="#home" onclick="navigateTo('home')">HOME</a>
+        <a href="#works" onclick="navigateTo('works')">WORKS</a>
+        <a href="#about" onclick="navigateTo('about')">ABOUT</a>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // 1. ANIMATED BACKGROUND CANVAS
+    const canvas = document.getElementById('bgCanvas');
+    const ctx = canvas.getContext('2d');
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+
+    window.addEventListener('resize', () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    });
+
+    let mouseX = width / 2;
+    let mouseY = height / 2;
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    });
+
+    function drawBg() {
+      ctx.clearRect(0, 0, width, height);
+
+      const activePage = document.querySelector('.view-page.active');
+      
+      if (activePage && (activePage.id === 'page-about' || activePage.id === 'page-contact')) {
+        ctx.strokeStyle = 'rgba(0, 0, 0, 0.28)';
+        ctx.lineWidth = 1.2;
+      } else {
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.18)';
+        ctx.lineWidth = 1;
+      }
+
+      for (let i = 0; i < width; i += 55) {
+        ctx.beginPath();
+        ctx.moveTo(i, 0);
+        ctx.quadraticCurveTo(mouseX, mouseY, i, height);
+        ctx.stroke();
+      }
+      requestAnimationFrame(drawBg);
+    }
+    drawBg();
+
+    // 2. CURSOR FOLLOWER
+    const cursor = document.getElementById('cursorDot');
+    document.addEventListener('mousemove', (e) => {
+      gsap.to(cursor, { x: e.clientX - 9, y: e.clientY - 9, duration: 0.15, ease: 'power2.out' });
+    });
+
+    // 3. TOGGLE MENU & PAGE NAVIGATION
+    function toggleMenu() {
+      document.getElementById('menuOverlay').classList.toggle('active');
+    }
+
+    // FUNGSI ANIMASI PIE CHART PAGE WORKS
+    function animateWorksPieChart() {
+      const pieVisual = document.getElementById('pieChartVisual');
+      const innerText = document.getElementById('pieInnerText');
+      if (!pieVisual || !innerText) return;
+
+      // Reset state ke 0
+      pieVisual.style.background = `conic-gradient(var(--neon-lime) 0deg 0deg, #ffffff 0deg 0deg, #33333e 0deg 0deg)`;
+      innerText.textContent = "0%";
+      document.querySelectorAll('.legend-count').forEach(l => l.textContent = "0%");
+
+      let pieObj = { p1: 0, p2: 0, p3: 0, total: 0 };
+
+      // Jalankan animasi GSAP
+      gsap.to(pieObj, {
+        p1: 144, // 40% dari 360 deg
+        p2: 252, // 70% dari 360 deg
+        p3: 360, // 100% dari 360 deg
+        total: 100,
+        duration: 1.8,
+        ease: "power2.out",
+        onUpdate: () => {
+          pieVisual.style.background = `conic-gradient(var(--neon-lime) 0deg ${pieObj.p1}deg, #ffffff ${pieObj.p1}deg ${pieObj.p2}deg, #33333e ${pieObj.p2}deg ${pieObj.p3}deg)`;
+          innerText.textContent = Math.floor(pieObj.total) + "%";
+        }
+      });
+
+      // Animasi Counting Legenda
+      document.querySelectorAll('.legend-count').forEach(legend => {
+        const target = parseInt(legend.getAttribute('data-target'));
+        let lObj = { val: 0 };
+        gsap.to(lObj, {
+          val: target,
+          duration: 1.8,
+          ease: "power2.out",
+          onUpdate: () => {
+            legend.textContent = Math.floor(lObj.val) + "%";
+          }
+        });
+      });
+    }
+
+    function navigateTo(pageId) {
+      if (document.getElementById('menuOverlay').classList.contains('active')) {
+        toggleMenu();
+      }
+      
+      const layer = document.getElementById('transitionLayer');
+
+      gsap.to(layer, {
+        top: '0%', duration: 0.4, ease: 'power4.inOut',
+        onComplete: () => {
+          document.querySelectorAll('.view-page').forEach(p => p.classList.remove('active'));
+          document.getElementById('page-' + pageId).classList.add('active');
+
+          if (pageId === 'about' || pageId === 'contact') {
+            document.body.classList.remove('theme-dark');
+            document.body.classList.add('theme-light');
+          } else {
+            document.body.classList.remove('theme-light');
+            document.body.classList.add('theme-dark');
+          }
+
+          window.scrollTo(0, 0);
+
+          setTimeout(() => {
+            gsap.to(layer, {
+              top: '-100%', duration: 0.4, ease: 'power4.inOut',
+              onComplete: () => {
+                gsap.set(layer, { top: '100%' });
+                // Pemicu animasi pie chart otomatis saat membuka Halaman Works
+                if (pageId === 'works') {
+                  animateWorksPieChart();
+                }
+              }
+            });
+          }, 200);
+        }
+      });
+    }
+
+    // 4. GSAP SCROLLTRIGGERS (KHUSUS HERO PAGE)
+    gsap.registerPlugin(ScrollTrigger);
+
+    gsap.to("#heroMarqueeText", {
+      xPercent: -30,
+      scrollTrigger: {
+        trigger: ".hero-top-section",
+        start: "top top",
+        end: "bottom top",
+        scrub: 1
+      }
+    });
+
+    // ANIMASI HERO PAGE STATS (COUNTING & PROGRESS BAR ON SCROLL)
+    ScrollTrigger.create({
+      trigger: "#heroStatsSection",
+      start: "top 80%",
+      once: true,
+      onEnter: () => {
+        document.querySelectorAll('#heroStatsSection .count-value').forEach(counter => {
+          const target = parseInt(counter.getAttribute('data-target'));
+          let obj = { val: 0 };
+          gsap.to(obj, {
+            val: target,
+            duration: 2,
+            ease: "power2.out",
+            onUpdate: () => {
+              counter.textContent = Math.floor(obj.val);
+            }
+          });
+        });
+
+        document.querySelectorAll('#heroStatsSection .stat-progress-fill').forEach(fill => {
+          const progress = fill.getAttribute('data-progress');
+          fill.style.width = progress;
+        });
+      }
+    });
+
+    // REVEAL ANIMATIONS GLOBAL
+    gsap.utils.toArray('.reveal-item').forEach((item) => {
+      gsap.from(item, {
+        y: 60,
+        opacity: 0,
+        duration: 0.8,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: item,
+          start: 'top 85%'
+        }
+      });
+    });
+
+    // FOOTER VISIBILITY ON SCROLL MENTOK KE BAWAH
+    window.addEventListener('scroll', () => {
+      const activePage = document.querySelector('.view-page.active');
+      if (!activePage) return;
+
+      const footer = activePage.querySelector('.animated-footer');
+      if (!footer) return;
+
+      const scrollPosition = window.innerHeight + window.scrollY;
+      const threshold = document.body.offsetHeight - 50;
+
+      if (scrollPosition >= threshold) {
+        footer.classList.add('is-visible');
+      } else {
+        footer.classList.remove('is-visible');
+      }
+    });
+  </script>
+
+</body>
+</html>

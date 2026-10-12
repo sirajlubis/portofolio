@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Siraj Lubis — Portfolio</title>
   <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+
   <!-- SEO & OPEN GRAPH (OG) META TAGS -->
   <meta name="description" content="Portfolio of Siraj Lubis — Creative Designer & Web Developer. Redefining limits & crafting digital experiences.">
   <meta name="author" content="Siraj Lubis">
@@ -27,7 +28,7 @@
   <meta name="twitter:title" content="Siraj Lubis — Portfolio">
   <meta name="twitter:description" content="Portfolio of Siraj Lubis — Creative Designer & Web Developer. Redefining limits & crafting digital experiences.">
   <meta name="twitter:image" content="https://sirlubis.my.id/og-image.png">
-  
+
   <!-- Favicon / Logo di Tab Chrome -->
   <link rel="icon" type="image/png" href="/favicon.png">
   <link rel="shortcut icon" type="image/png" href="/favicon.png">
@@ -134,12 +135,6 @@
       mix-blend-mode: difference;
     }
 
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
     .logo {
       font-family: 'Syne', sans-serif;
       font-size: 1.4rem;
@@ -147,23 +142,6 @@
       letter-spacing: -1px;
       color: #fff;
     }
-
-    .sfx-btn {
-      width: 44px;
-      height: 44px;
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 8px;
-      color: #fff;
-      font-size: 1.1rem;
-      cursor: pointer;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      transition: background 0.2s ease, transform 0.2s ease;
-    }
-
-    .sfx-btn:active { transform: scale(0.92); }
 
     .hamburger-btn {
       width: 44px;
@@ -182,6 +160,35 @@
 
     .hamburger-btn:active { transform: scale(0.92); }
     .hamburger-btn span { width: 20px; height: 2.5px; background: #000; }
+
+    /* FLOATING SFX BUTTON (KANAN BAWAH) */
+    .floating-sfx-btn {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      width: 48px;
+      height: 48px;
+      background: #141418;
+      border: 2px solid var(--neon-lime);
+      border-radius: 50%;
+      color: var(--neon-lime);
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9900;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .floating-sfx-btn:hover {
+      background: var(--neon-lime);
+      color: #000;
+      transform: scale(1.08);
+    }
+
+    .floating-sfx-btn:active { transform: scale(0.92); }
 
     /* MENU OVERLAY */
     .menu-overlay {
@@ -310,7 +317,7 @@
     .toast-notification {
       position: fixed;
       bottom: 30px;
-      right: 30px;
+      right: 85px;
       background: var(--neon-lime);
       color: #000000;
       border: 2px solid #000000;
@@ -329,6 +336,235 @@
     .toast-notification.active {
       transform: translateY(0);
       opacity: 1;
+    }
+
+    /* ==================== HERO ACTION BUTTONS ==================== */
+    .hero-actions-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .availability-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(210, 255, 0, 0.08);
+      border: 1px solid var(--neon-lime);
+      color: var(--neon-lime);
+      padding: 8px 16px;
+      border-radius: 30px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: transform 0.2s ease, background 0.2s ease;
+      box-shadow: 0 0 15px rgba(210, 255, 0, 0.15);
+    }
+
+    .availability-badge:hover {
+      background: var(--neon-lime);
+      color: #000;
+      transform: translateY(-2px);
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background-color: var(--neon-lime);
+      border-radius: 50%;
+      box-shadow: 0 0 0 0 rgba(210, 255, 0, 0.7);
+      animation: pulseAnimation 1.6s infinite;
+    }
+
+    .availability-badge:hover .pulse-dot {
+      background-color: #000;
+      box-shadow: none;
+      animation: none;
+    }
+
+    @keyframes pulseAnimation {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(210, 255, 0, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(210, 255, 0, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(210, 255, 0, 0); }
+    }
+
+    .hero-search-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+      padding: 8px 18px;
+      border-radius: 30px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .hero-search-btn:hover {
+      border-color: var(--neon-lime);
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .hero-search-btn span.kbd {
+      background: var(--neon-lime);
+      color: #000;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+    }
+
+    /* ==================== SKILL / CATEGORY FILTER PILLS ==================== */
+    .filter-bar-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 30px;
+    }
+
+    .filter-pill {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-dark);
+      color: var(--text-muted);
+      padding: 10px 18px;
+      border-radius: 30px;
+      font-size: 0.8rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .filter-pill:hover {
+      border-color: var(--neon-lime);
+      color: #fff;
+    }
+
+    .filter-pill.active {
+      background: var(--neon-lime);
+      color: #000;
+      border-color: var(--neon-lime);
+      box-shadow: 0 0 12px rgba(210, 255, 0, 0.3);
+    }
+
+    /* ==================== COMMAND PALETTE MODAL ==================== */
+    .cmd-palette-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 3000;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding-top: 15vh;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    .cmd-palette-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .cmd-palette-card {
+      background: #141418;
+      border: 2px solid var(--neon-lime);
+      border-radius: 16px;
+      max-width: 580px;
+      width: 90%;
+      padding: 20px;
+      box-shadow: 0 20px 50px rgba(210, 255, 0, 0.2);
+      transform: translateY(-20px);
+      transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .cmd-palette-overlay.active .cmd-palette-card {
+      transform: translateY(0);
+    }
+
+    .cmd-input-box {
+      width: 100%;
+      background: #08080a;
+      border: 1px solid var(--border-dark);
+      border-radius: 8px;
+      padding: 14px 16px;
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      outline: none;
+      margin-bottom: 15px;
+    }
+
+    .cmd-input-box:focus { border-color: var(--neon-lime); }
+
+    .cmd-results-list {
+      max-height: 280px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .cmd-item {
+      padding: 12px 16px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .cmd-item:hover {
+      background: var(--neon-lime);
+      color: #000;
+    }
+
+    .cmd-item-title { font-weight: 800; font-size: 0.9rem; text-transform: uppercase; }
+    .cmd-item-type { font-size: 0.75rem; opacity: 0.7; font-weight: 700; }
+
+    /* CUSTOM TOOLTIP ON SOCIAL CARDS */
+    .social-card {
+      position: relative;
+    }
+
+    .social-card::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: 110%;
+      left: 50%;
+      transform: translateX(-50%) translateY(8px);
+      background: #000;
+      color: var(--neon-lime);
+      border: 1px solid #000;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.2s ease;
+      box-shadow: 3px 3px 0px #000;
+      z-index: 10;
+    }
+
+    .social-card:hover::after {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
     }
 
     /* ==================== 1. HOME LANDING PAGE ==================== */
@@ -400,7 +636,7 @@
       z-index: 4;
     }
 
-    .text-reveal-box { text-align: center; margin-bottom: 60px; }
+    .text-reveal-box { text-align: center; margin-bottom: 30px; }
 
     .wrapped-text {
       font-family: 'Syne', sans-serif;
@@ -1137,6 +1373,19 @@
     ✓ EMAIL COPIED TO CLIPBOARD!
   </div>
 
+  <!-- FLOATING SFX BUTTON (KANAN BAWAH) -->
+  <button class="floating-sfx-btn" id="sfxToggleBtn" onclick="toggleSFX()" aria-label="Toggle Sound" title="Toggle Sound Effects">🔊</button>
+
+  <!-- COMMAND PALETTE OVERLAY -->
+  <div class="cmd-palette-overlay" id="cmdPaletteOverlay" onclick="closeCmdPalette(event)">
+    <div class="cmd-palette-card" onclick="event.stopPropagation()">
+      <input type="text" class="cmd-input-box" id="cmdInput" placeholder="Cari halaman, proyek, atau sosial media... (Tekan ESC untuk tutup)" oninput="filterCmdResults()">
+      <div class="cmd-results-list" id="cmdResultsList">
+        <!-- Render otomatis via JS -->
+      </div>
+    </div>
+  </div>
+
   <!-- BACKGROUND MOTION CANVAS -->
   <canvas id="bgCanvas"></canvas>
 
@@ -1148,17 +1397,14 @@
     <div class="transition-logo">SIRAJLUBIS</div>
   </div>
 
-  <!-- NAVBAR -->
+  <!-- NAVBAR (MINIMALIS CLEAN) -->
   <header>
     <div class="logo">SIRAJLUBIS</div>
-    <div class="header-actions">
-      <button class="sfx-btn" id="sfxToggleBtn" onclick="toggleSFX()" aria-label="Toggle Sound">🔊</button>
-      <button class="hamburger-btn" onclick="toggleMenu()" aria-label="Menu">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-    </div>
+    <button class="hamburger-btn" onclick="toggleMenu()" aria-label="Menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
   </header>
 
   <!-- MENU OVERLAY -->
@@ -1183,7 +1429,7 @@
     <section class="hero-top-section">
       <div class="hero-marquee-bg">
         <div id="heroMarqueeText">
-          <span>EXCELSIOR! • DIGITAL MARKETING • CREATIVE DESIGNER • </span>
+          <span>EXCELSIOR! • SIRAJ LUBIS • CREATIVE DESIGNER • </span>
         </div>
       </div>
 
@@ -1192,6 +1438,21 @@
           <img src="https://lh3.googleusercontent.com/d/17F5nGstxnqjTcrs2N2q4hQO51xhSsQXK" 
                onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=600'" 
                alt="Siraj Lubis">
+        </div>
+      </div>
+
+      <!-- HERO INTERACTIVE BUTTONS BAR -->
+      <div class="hero-actions-bar">
+        <!-- AVAILABILITY BADGE -->
+        <div class="availability-badge" onclick="navigateTo('contact')">
+          <div class="pulse-dot"></div>
+          <span>AVAILABLE FOR FREELANCE & NEW PROJECTS ↗</span>
+        </div>
+
+        <!-- HERO SEARCH BAR BUTTON -->
+        <div class="hero-search-btn" onclick="openCmdPalette()" title="Quick Navigation">
+          <span>🔍 SEARCH OR NAVIGATE...</span>
+          <span class="kbd">CMD+K</span>
         </div>
       </div>
     </section>
@@ -1220,7 +1481,7 @@
           <div class="stat-card">
             <div>
               <div class="stat-number-box">
-                <span class="count-value" data-target="3">0</span><span style="font-size: clamp(1.5rem, 5vw, 2.2rem); margin-left: 5px;">YEARS</span>
+                <span class="count-value" data-target="3">0</span><span style="font-size: clamp(1.5rem, 5vw, 2.2rem); margin-left: 5px;">YRS</span>
               </div>
               <div class="stat-label">Work Experience</div>
             </div>
@@ -1254,7 +1515,7 @@
           <p>Mengembangkan banyak proyek web app untuk kebutuhan tertentu dengan efisiensi yang baik.</p>
         </div>
         <div class="content-card reveal-item">
-          <h3>03 / Social Media Analyst & Digital Marketing</h3>
+          <h3>03 / Social Media & Copywriting</h3>
           <p>Menganalisa trend, membuat content planning, dan scheduling upload untuk social media.</p>
         </div>
       </div>
@@ -1297,7 +1558,7 @@
             <div class="legend-item">
               <div class="legend-left">
                 <div class="legend-color-dot" style="background: var(--neon-lime);"></div>
-                <span class="legend-label">Social Media Analyst & Digital Marketing</span>
+                <span class="legend-label">Social Media Analyst & Copywriting</span>
               </div>
               <span class="legend-value legend-count" data-target="40">0%</span>
             </div>
@@ -1321,7 +1582,15 @@
         </div>
       </div>
 
-      <!-- MATRIX GRID PROYEK DINAMIS DARI ARRAY (6 PROYEK) -->
+      <!-- SKILL / CATEGORY FILTER PILLS -->
+      <div class="filter-bar-container" id="filterBarContainer">
+        <button class="filter-pill active" onclick="filterProjects('ALL', this)">ALL</button>
+        <button class="filter-pill" onclick="filterProjects('DASHBOARD', this)">DASHBOARD</button>
+        <button class="filter-pill" onclick="filterProjects('WEB APP', this)">WEB APP</button>
+        <button class="filter-pill" onclick="filterProjects('GRAPHIC DESIGN', this)">GRAPHIC DESIGN</button>
+      </div>
+
+      <!-- MATRIX GRID PROYEK DINAMIS DARI ARRAY -->
       <div class="works-matrix-grid" id="worksMatrixGrid">
         <!-- Generasi Otomatis via JS -->
       </div>
@@ -1413,10 +1682,10 @@
       <div class="social-media-section">
         <h3 style="font-family:'Syne'; font-size:1.6rem; text-transform:uppercase; margin-bottom:16px;">CONNECT ON SOCIALS</h3>
         <div class="social-grid">
-          <a href="https://www.instagram.com/sirajlubis" target="_blank" rel="noopener" class="social-card" onclick="playClickSound()">INSTAGRAM</a>
-          <a href="https://www.tiktok.com/@sirlubis" target="_blank" rel="noopener" class="social-card" onclick="playClickSound()">TIKTOK</a>
-          <a href="https://id.linkedin.com/in/sirajlubis" target="_blank" rel="noopener" class="social-card" onclick="playClickSound()">LINKEDIN</a>
-          <a href="https://dribbble.com/sirajlubis" target="_blank" rel="noopener" class="social-card" onclick="playClickSound()">DRIBBBLE</a>
+          <a href="https://www.instagram.com/sirajlubis" target="_blank" rel="noopener" class="social-card" data-tooltip="Follow my daily updates ↗" onclick="playClickSound()">INSTAGRAM</a>
+          <a href="https://www.tiktok.com/@sirlubis" target="_blank" rel="noopener" class="social-card" data-tooltip="Watch my creative content ↗" onclick="playClickSound()">TIKTOK</a>
+          <a href="https://id.linkedin.com/in/sirajlubis" target="_blank" rel="noopener" class="social-card" data-tooltip="Connect professionally ↗" onclick="playClickSound()">LINKEDIN</a>
+          <a href="https://dribbble.com/sirajlubis" target="_blank" rel="noopener" class="social-card" data-tooltip="Explore my design shots ↗" onclick="playClickSound()">DRIBBBLE</a>
         </div>
       </div>
     </div>
@@ -1556,7 +1825,6 @@
       playClickSound();
       const email = 'sirajazmilubis@gmail.com';
       
-      // Animasi Pulse/Bounce GSAP pada Direct Email Card saat diklik
       const card = document.getElementById('quickCopyCard');
       if (card) {
         gsap.timeline()
@@ -1581,11 +1849,12 @@
       }, 2500);
     }
 
-    // DATA PROJECTS ARRAY OF OBJECTS (DENGAN ARRAY 3 GAMBAR PER PROYEK)
+    // DATA PROJECTS ARRAY OF OBJECTS (DISERTAI TAG FILTER CATEGORY)
     const projectsData = [
       {
         id: "sihonor",
         number: "01",
+        filterTag: "DASHBOARD",
         category: "INVOICE PAYMENT DASHBOARD",
         title: "Si-Honor",
         shortDesc: "Sistem kalkulasi honorarium guru triwulanan dan cetak slip gaji A4 otomatis.",
@@ -1600,6 +1869,7 @@
       {
         id: "mysarpras",
         number: "02",
+        filterTag: "DASHBOARD",
         category: "INVENTORY DASHBOARD",
         title: "MySarPras",
         shortDesc: "Sistem inventarisasi dan pemeliharaan sarana prasarana di Pesantren.",
@@ -1614,6 +1884,7 @@
       {
         id: "bpsapp",
         number: "03",
+        filterTag: "DASHBOARD",
         category: "PERFORMANCE CONTROLLING DASHBOARD",
         title: "BPS App",
         shortDesc: "Dashboard kontrol performa dan monitoring ketercapaian program kerja.",
@@ -1628,6 +1899,7 @@
       {
         id: "mytik",
         number: "04",
+        filterTag: "DASHBOARD",
         category: "TEACHER DASHBOARD",
         title: "MyTIK",
         shortDesc: "Dashboard pembelajaran TIK, presensi guru, repository materi, dan peringkat siswa.",
@@ -1642,6 +1914,7 @@
       {
         id: "efinwta",
         number: "05",
+        filterTag: "WEB APP",
         category: "MONEY MANAGEMENT DASHBOARD",
         title: "E-Fin WTA IV",
         shortDesc: "Dashboard pengelolaan keuangan dan anggaran kegiatan Wisuda Tahfidz di Pesantren.",
@@ -1656,10 +1929,11 @@
       {
         id: "pesantrenmurottal",
         number: "06",
+        filterTag: "WEB APP",
         category: "SCHOOL WEB PORTAL",
         title: "Pesantren Murottal Website",
         shortDesc: "Portal informasi institusi, profil program pendidikan, dan sistem pendaftaran santri baru.",
-        fullDesc: "Website resmi Pesantren Murottal Depok yang menyajikan informasi profil lembaga, kurikulum program jenjang MTs & MA berbasis Tahfidz Al-Qur'an dan Entrepreneurship, serta integrasi layanan informasi pendaftaran santri baru.",
+        fullDesc: "Website resmi Pesantren Murottal Depok yang menyajikan informasi profil lembaga, kurikulum program jenjang MTs & MA berbasis tahfidz Al-Qur'an dan Entrepreneurship, serta integrasi layanan informasi pendaftaran santri baru.",
         techStack: ["Web Development", "UI/UX Design", "Responsive Layout"],
         images: [
           "https://lh3.googleusercontent.com/d/1DNJo3bBdHGCC3xvY6knFHHUvAkB5G1Db",
@@ -1669,7 +1943,7 @@
       }
     ];
 
-    // DATA DETAIL UNTUK ABOUT ACCORDION MODAL
+    // DATA DETAIL ABOUT ACCORDION MODAL
     const aboutDetailsData = {
       pendidikan: {
         tag: "AKADEMIK & EDUCATIONAL BACKGROUND",
@@ -1679,11 +1953,10 @@
             title: "STMIK Antar Bangsa",
             sub: "2025 - Present • Sarjana (S1) Sistem Informasi",
             details: `
-              <p><strong>Fokus Utama:</strong> Sistem Informasi, Software Engineering, Web Development, Database Systems, & UI/UX Design.</p>
+              <p><strong>Fokus Utama:</strong> Sistem Informasi, Software Engineering, Web Development, & Database Systems.</p>
               <ul>
                 <li>Memperdalam arsitektur Web Development, UI/UX Design, serta Role-Based Access Control (RBAC).</li>
                 <li>Aktif mengembangkan berbagai aplikasi internal dan dashboard manajemen berbasis Google Apps Script & Cloud.</li>
-                <li>GPA: <strong>3.86 / 4.00</strong> (Latest Term: 4.00/4.00).</li>
               </ul>
             `
           },
@@ -1695,7 +1968,6 @@
               <ul>
                 <li>Lulus dengan predikat <strong>3rd Place of Top Graduate</strong>.</li>
                 <li>Mempelajari dasar-dasar pemrograman berstandar industri, database MySQL, serta sertifikasi kompetensi BNSP.</li>
-                <li>GPA: <strong>3.75 / 4.00</strong>.</li>
               </ul>
             `
           },
@@ -1705,10 +1977,8 @@
             details: `
               <p><strong>Fokus Utama:</strong> Tahfidz Al-Qur'an, Leadership, Public Speaking, & Entrepreneurship.</p>
               <ul>
-                <li>Pendidikan menengah berbasis integrasi modern dan agama.</li>
-                <li>Aktif selama 3 tahun menjadi Sekretaris OSPM dan pengelolaan media komunikasi publik Pesantren.</li>
-                <li>Sekarang aktif mengajar TIK dan Bahasa Inggris untuk jenjang MTs dan MA.</li>
-                <li>Sekarang menjabat sebagai Kepala Biro Pengasuhan Santri.</li>
+                <li>Pendidikan menengah berbasis integrasi sains dan agama.</li>
+                <li>Aktif memimpin organisasi kesiswaan dan pengelolaan media komunikasi publik lembaga.</li>
               </ul>
             `
           }
@@ -1736,26 +2006,31 @@
             title: "Best New Student of The Year",
             sub: "STMIK Antar Bangsa • Penghargaan Akademik",
             details: `
-              <p><strong>Deskripsi:</strong> Penghargaan mahasiswa baru terbaik atas kontribusi aktif, pencapaian akademik berprestasi, dan keaktifan dalam pembelajaran di kelas.</p>
+              <p><strong>Deskripsi:</strong> Penghargaan mahasiswa baru terbaik atas kontribusi aktif, pencapaian akademik berprestasi, dan keaktifan dalam pengembangan solusi teknologi informasi.</p>
             `
           },
           {
             title: "3rd Place of Top Graduate",
             sub: "PeTIK Depok • Prestasi Kelulusan Vokasi",
             details: `
-              <p><strong>Deskripsi:</strong> Meraih peringkat ke-3 kelulusan terbaik dari seluruh peserta program pelatihan vokasi IT di PeTIK Depok untuk Jurusan Android Programmer <strong>(GPA 3.75)</strong> berdasarkan nilai akademik, tugas akhir, dan sikap profesionalisme.</p>
+              <p><strong>Deskripsi:</strong> Meraih peringkat ke-3 kelulusan terbaik dari seluruh peserta program pelatihan vokasi IT di PeTIK Depok berdasarkan nilai akademik, tugas akhir, dan sikap profesionalisme.</p>
             `
           }
         ]
       }
     };
 
-    // RENDER KARTU PROYEK DI MATRIX GRID WORKS (SAMPUL DARI GAMBAR PERTAMA)
-    function renderProjectsGrid() {
+    // RENDER KARTU PROYEK DI MATRIX GRID WORKS
+    function renderProjectsGrid(data = projectsData) {
       const grid = document.getElementById('worksMatrixGrid');
       if (!grid) return;
 
-      grid.innerHTML = projectsData.map(proj => `
+      if (data.length === 0) {
+        grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-muted); font-weight: 700;">BELUM ADA PROYEK DENGAN KATEGORI INI.</div>`;
+        return;
+      }
+
+      grid.innerHTML = data.map(proj => `
         <div class="matrix-card reveal-item" onclick="openProjectModal('${proj.id}')">
           <div class="matrix-thumb">
             <img src="${proj.images[0]}" alt="${proj.title}">
@@ -1765,7 +2040,99 @@
           <p style="color: var(--text-muted); margin-top: 8px; font-size: 0.9rem;">${proj.shortDesc}</p>
         </div>
       `).join('');
+
+      // GSAP Fade In untuk item baru
+      gsap.from("#worksMatrixGrid .matrix-card", {
+        y: 20,
+        opacity: 0,
+        duration: 0.4,
+        stagger: 0.08,
+        ease: "power2.out"
+      });
     }
+
+    // FUNGSI SKILL / CATEGORY FILTER
+    function filterProjects(tag, btnElement) {
+      playClickSound();
+      
+      document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+      if (btnElement) btnElement.classList.add('active');
+
+      if (tag === 'ALL') {
+        renderProjectsGrid(projectsData);
+      } else {
+        const filtered = projectsData.filter(p => p.filterTag === tag);
+        renderProjectsGrid(filtered);
+      }
+    }
+
+    // FUNGSI COMMAND PALETTE QUICK SEARCH
+    const cmdListItems = [
+      { title: "Home Page", type: "NAVIGATION", action: () => navigateTo('home') },
+      { title: "Works Showcase", type: "NAVIGATION", action: () => navigateTo('works') },
+      { title: "About & Credentials", type: "NAVIGATION", action: () => navigateTo('about') },
+      { title: "Contact Me", type: "NAVIGATION", action: () => navigateTo('contact') },
+      { title: "Si-Honor Project", type: "PROJECT", action: () => openProjectModal('sihonor') },
+      { title: "MySarPras Project", type: "PROJECT", action: () => openProjectModal('mysarpras') },
+      { title: "BPS App Project", type: "PROJECT", action: () => openProjectModal('bpsapp') },
+      { title: "MyTIK Dashboard", type: "PROJECT", action: () => openProjectModal('mytik') },
+      { title: "E-Fin WTA IV", type: "PROJECT", action: () => openProjectModal('efinwta') },
+      { title: "Pesantren Murottal Portal", type: "PROJECT", action: () => openProjectModal('pesantrenmurottal') },
+      { title: "Copy Email Address", type: "ACTION", action: () => copyContactEmail() }
+    ];
+
+    function openCmdPalette() {
+      playClickSound();
+      const overlay = document.getElementById('cmdPaletteOverlay');
+      const input = document.getElementById('cmdInput');
+      overlay.classList.add('active');
+      input.value = '';
+      filterCmdResults();
+      setTimeout(() => input.focus(), 100);
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeCmdPalette(e) {
+      if (!e || e.target.id === 'cmdPaletteOverlay' || e.key === 'Escape') {
+        document.getElementById('cmdPaletteOverlay').classList.remove('active');
+        document.body.style.overflow = 'auto';
+      }
+    }
+
+    function filterCmdResults() {
+      const query = document.getElementById('cmdInput').value.toLowerCase();
+      const resultsContainer = document.getElementById('cmdResultsList');
+      
+      const filtered = cmdListItems.filter(item => item.title.toLowerCase().includes(query) || item.type.toLowerCase().includes(query));
+      
+      resultsContainer.innerHTML = filtered.map((item, idx) => `
+        <div class="cmd-item" onclick="execCmdItem(${idx})">
+          <span class="cmd-item-title">${item.title}</span>
+          <span class="cmd-item-type">${item.type}</span>
+        </div>
+      `).join('');
+    }
+
+    function execCmdItem(index) {
+      const query = document.getElementById('cmdInput').value.toLowerCase();
+      const filtered = cmdListItems.filter(item => item.title.toLowerCase().includes(query) || item.type.toLowerCase().includes(query));
+      
+      if (filtered[index]) {
+        closeCmdPalette();
+        filtered[index].action();
+      }
+    }
+
+    // KEYBOARD SHORTCUT (CMD/CTRL + K atau HANYA K)
+    document.addEventListener('keydown', (e) => {
+      if ((e.key === 'k' || e.key === 'K') && !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
+        e.preventDefault();
+        openCmdPalette();
+      }
+      if (e.key === 'Escape') {
+        closeCmdPalette({ key: 'Escape' });
+      }
+    });
 
     // FUNGSI GANTI GAMBAR UTAMA CAROUSEL DARI THUMBNAIL
     function switchModalImage(imgSrc, thumbElement) {
@@ -1773,7 +2140,6 @@
       const mainImg = document.getElementById('modalMainImage');
       if (!mainImg) return;
 
-      // Animasi transisi GSAP smooth fade
       gsap.to(mainImg, {
         opacity: 0,
         duration: 0.15,
@@ -1783,14 +2149,13 @@
         }
       });
 
-      // Update state Thumbnail Active
       document.querySelectorAll('.modal-thumb-item').forEach(t => t.classList.remove('active'));
       if (thumbElement) {
         thumbElement.classList.add('active');
       }
     }
 
-    // FUNGSI KONTROL POP-UP MODAL PROYEK (MINI CAROUSEL)
+    // FUNGSI KONTROL POP-UP MODAL PROYEK
     function openProjectModal(id) {
       playClickSound();
       const proj = projectsData.find(p => p.id === id);
@@ -1800,12 +2165,10 @@
       document.getElementById('modalTitle').textContent = proj.title;
       document.getElementById('modalDesc').textContent = proj.fullDesc;
 
-      // Set Gambar Utama dari indeks ke-0
       const mainImg = document.getElementById('modalMainImage');
       mainImg.src = proj.images[0];
       mainImg.style.opacity = 1;
 
-      // Render 3 Thumbnail Item
       const thumbGrid = document.getElementById('modalThumbGrid');
       thumbGrid.innerHTML = proj.images.map((imgUrl, idx) => `
         <div class="modal-thumb-item ${idx === 0 ? 'active' : ''}" onclick="switchModalImage('${imgUrl}', this)">
@@ -1813,7 +2176,6 @@
         </div>
       `).join('');
 
-      // Tech Stack Pills
       const techContainer = document.getElementById('modalTechStack');
       techContainer.innerHTML = proj.techStack.map(t => `<span class="tech-pill">${t}</span>`).join('');
 
@@ -1863,7 +2225,6 @@
       document.getElementById('aboutModalOverlay').classList.add('active');
       document.body.style.overflow = 'hidden';
 
-      // Otomatis Buka Accordion Pertama (#01)
       setTimeout(() => {
         toggleAccordionItem(0);
       }, 150);
@@ -1877,7 +2238,6 @@
 
       const isOpen = targetItem.classList.contains('active');
 
-      // Close all other accordions
       document.querySelectorAll('.accordion-item').forEach((item, idx) => {
         if (idx !== index) {
           item.classList.remove('active');
@@ -1888,7 +2248,6 @@
         }
       });
 
-      // Toggle current accordion
       if (isOpen) {
         targetItem.classList.remove('active');
         gsap.to(targetBody, { height: 0, opacity: 0, duration: 0.3, ease: 'power2.out' });
